@@ -51,6 +51,7 @@ int main() {
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 	
+
 	// Scene
 	GLfloat vertices[] = {
 		-0.5f, -0.5f, 0.0f,
