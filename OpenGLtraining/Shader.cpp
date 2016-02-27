@@ -7,14 +7,16 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath, const GLcha
 	this->program = glCreateProgram();
 	GLuint vertex, fragment, geometry;
 	// Vertex
-	const GLchar* vertexCode = fileToString(vertexPath).c_str();
+	std::string vertexString = fileToString(vertexPath);
+	const GLchar* vertexCode = vertexString.c_str();
 	vertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex, 1, &vertexCode, NULL);
 	glCompileShader(vertex);
 	checkErrors(vertex, "vertex");
 	glAttachShader(this->program, vertex);
 	// Fragment
-	const GLchar* fragCode = fileToString(fragmentPath).c_str();
+	std::string fragmentString = fileToString(fragmentPath);
+	const GLchar* fragCode = fragmentString.c_str();
 	fragment = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment, 1, &fragCode, NULL);
 	glCompileShader(fragment);
@@ -22,7 +24,8 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath, const GLcha
 	glAttachShader(this->program, fragment);
 	// Geometry
 	if (geometryPath != nullptr) {
-		const GLchar* geoCode = fileToString(geometryPath).c_str();
+		std::string geometryString = fileToString(geometryPath);
+		const GLchar* geoCode = geometryString.c_str();
 		geometry = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(geometry, 1, &geoCode, NULL);
 		glCompileShader(geometry);
