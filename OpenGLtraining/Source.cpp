@@ -22,28 +22,37 @@ const GLfloat NEAR_PLANE = 0.1f, FAR_PLANE = 100.0f;
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-GLfloat cameraSpeed = 0.05f;
+
+
+bool keys[1024];
+
+GLfloat deltaTime = 0.0f;
+GLfloat lastFrame = 0.0f;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	if (key == GLFW_KEY_KP_0) {
-		if( action == GLFW_PRESS) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		else if (action == GLFW_RELEASE) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-	if (key == GLFW_KEY_KP_1) {
-		if (action == GLFW_PRESS) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		else if (action == GLFW_RELEASE) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	}
-	if (key == GLFW_KEY_KP_2) {
-		if (action == GLFW_PRESS) glDisable(GL_DEPTH_TEST);
-		else if (action == GLFW_RELEASE) glEnable(GL_DEPTH_TEST);
-	}
+	if (action == GLFW_PRESS) keys[key] = true;
+	else if (action == GLFW_RELEASE) keys[key] = false;
+}
 
-	if (key == GLFW_KEY_W) cameraPos += cameraSpeed * cameraFront;
-	if (key == GLFW_KEY_S) cameraPos -= cameraSpeed * cameraFront;
-	if (key == GLFW_KEY_A) cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-	if (key == GLFW_KEY_D) cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+void handle_keys(GLFWwindow* window) {
+	if (keys[GLFW_KEY_ESCAPE]) glfwSetWindowShouldClose(window, GL_TRUE);
+	
+	if (keys[GLFW_KEY_KP_0]) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	
+	if (keys[GLFW_KEY_KP_1]) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	else glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	
+	if (keys[GLFW_KEY_KP_2]) glDisable(GL_DEPTH_TEST);
+	else glEnable(GL_DEPTH_TEST);
+}
+
+void move_camera() {
+	GLfloat cameraSpeed = 5.0f * deltaTime;
+	if (keys[GLFW_KEY_W]) cameraPos += cameraSpeed * cameraFront;
+	if (keys[GLFW_KEY_S]) cameraPos -= cameraSpeed * cameraFront;
+	if (keys[GLFW_KEY_A]) cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	if (keys[GLFW_KEY_D]) cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 
@@ -202,7 +211,12 @@ int main() {
 	//Main loop
 	while (!glfwWindowShouldClose(window))
 	{
+		GLfloat currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
 		
+		handle_keys(window);
+		move_camera();
 
 		glfwPollEvents();
 
