@@ -215,8 +215,12 @@ int main() {
 		GLuint viewLoc = glGetUniformLocation(shader.program, "view");
 		GLuint projLoc = glGetUniformLocation(shader.program, "proj");
 
+		GLfloat r = 10.0f;
+		GLfloat camX = sin(glfwGetTime()) * r;
+		GLfloat camZ = cos(glfwGetTime()) * r;
+
 		glm::mat4 view;
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+		view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 		glm::mat4 proj;
