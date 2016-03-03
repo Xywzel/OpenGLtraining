@@ -23,15 +23,42 @@ glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-
+bool firstMouse = true;
 bool keys[1024];
-
+GLfloat mouseX = WIDTH / 2.0f;
+GLfloat mouseY = HEIGHT / 2.0f;
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
+GLfloat yaw = -90.0f;
+GLfloat pitch = 0.0f;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
 	if (action == GLFW_PRESS) keys[key] = true;
 	else if (action == GLFW_RELEASE) keys[key] = false;
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+	if (firstMouse) {
+		mouseX = xpos;
+		mouseY = ypos;
+		firstMouse = false;
+	}
+	GLfloat xoffset = xpos - mouseX;
+	GLfloat yoffset = mouseY - ypos;
+	mouseX = xpos;
+	mouseY = ypos;
+	GLfloat sensitivity = 0.05f;
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+	yaw += xoffset;
+	pitch += yoffset;
+	if (pitch < -89.0f) pitch = -89.0f;
+	if (pitch > 89.0f) pitch = 89.0f;
+	glm::vec3 front;
+	front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+	front.y = sin(glm::radians(pitch));
+	front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+	cameraFront = glm::normalize(front);
 }
 
 void handle_keys(GLFWwindow* window) {
@@ -73,6 +100,7 @@ int main() {
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Start GLEW
 	glewExperimental = GL_TRUE;
@@ -207,6 +235,7 @@ int main() {
 
 	// Callbacks
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
 
 	//Main loop
 	while (!glfwWindowShouldClose(window))
