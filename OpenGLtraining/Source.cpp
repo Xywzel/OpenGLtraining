@@ -201,10 +201,6 @@ int main() {
 
 		shader.use();
 
-
-		
-
-
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glUniform1i(glGetUniformLocation(shader.program, "ourTexture1"), 0);
@@ -231,7 +227,7 @@ int main() {
 			
 			glm::mat4 model;
 			model = glm::translate(model, locations[i]);
-			model = glm::rotate(model, (GLfloat) glfwGetTime() * glm::radians(50.0f) + glm::radians(20.0f*i), glm::vec3(0.5f, 1.0f, 0.0f));
+			model = glm::rotate(model, (GLfloat) glfwGetTime() * glm::radians(50.0f) + glm::radians(20.0f*i), glm::vec3(0.1f * i, 0.1f * (10-i), 0.0f));
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			
 			glDrawArrays(GL_TRIANGLES, 0, 36);
