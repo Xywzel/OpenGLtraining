@@ -19,6 +19,11 @@ const GLuint WIDTH = 800, HEIGHT = 600;
 const GLfloat FOV = glm::radians(60.0f);
 const GLfloat NEAR_PLANE = 0.1f, FAR_PLANE = 100.0f;
 
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+GLfloat cameraSpeed = 0.05f;
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
@@ -34,6 +39,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		if (action == GLFW_PRESS) glDisable(GL_DEPTH_TEST);
 		else if (action == GLFW_RELEASE) glEnable(GL_DEPTH_TEST);
 	}
+
+	if (key == GLFW_KEY_W) cameraPos += cameraSpeed * cameraFront;
+	if (key == GLFW_KEY_S) cameraPos -= cameraSpeed * cameraFront;
+	if (key == GLFW_KEY_A) cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	if (key == GLFW_KEY_D) cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 
@@ -220,7 +230,7 @@ int main() {
 		GLfloat camZ = cos(glfwGetTime()) * r;
 
 		glm::mat4 view;
-		view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 		glm::mat4 proj;
