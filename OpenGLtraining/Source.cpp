@@ -153,8 +153,6 @@ int main() {
 		glm::vec3(1.5f,  2.0f, -2.5f),
 		glm::vec3(1.5f,  0.2f, -1.5f)
 	};
-	glm::vec3 lightLocation = glm::vec3(-1.3f, 1.0f, -1.5f);
-
 
 	GLuint VBO, VAO;
 	glGenVertexArrays(1, &VAO);
@@ -194,6 +192,8 @@ int main() {
 		glm::vec2 mouseOffset = mousePos - mouseLast;
 		mouseLast = mousePos;
 		camera.update(keys, mouseOffset, mouseScroll, deltaTime);
+
+		glm::vec3 lightLocation = glm::vec3(-2.0f * sin(currentFrame), 1.0f, -1.5f * cos(currentFrame));
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
