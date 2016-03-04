@@ -1,14 +1,19 @@
 #version 330 core
 
-in vec3 ourColor;
-in vec2 TexCoord;
+in vec3 Normal;
+in vec3 FragPos;
 
 out vec4 color;
 
-uniform sampler2D ourTexture1;
-uniform sampler2D ourTexture2;
+uniform vec3 objectColor;
+uniform vec3 lightColor;
+uniform vec3 lightPos;
 
 void main()
 {
-	color = mix(texture(ourTexture1, TexCoord), texture(ourTexture2, vec2(TexCoord.x, 1.0f - TexCoord.y)* 2.0), 0.5);
+	vec3 norm = normalize(Normal);
+	vec3 lightDir = normalize(lightPos - FragPos);
+	float ambient = 0.1f;
+	vec3 diffuse = max(dot(norm, lightDir), 0.0f) * lightColor;
+	color = vec4((ambient + diffuse) * lightColor * objectColor, 1.0f);
 }
