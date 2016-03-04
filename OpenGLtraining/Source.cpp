@@ -245,9 +245,11 @@ int main() {
 		// Shader parameters
 
 		glUniform3f(glGetUniformLocation(shader.program, "light.position"), lightLocation.x, lightLocation.y, lightLocation.z);
+		//glUniform3f(glGetUniformLocation(shader.program, "light.direction"), -0.2f, -1.0f, -0.3f);
 		glUniform3f(glGetUniformLocation(shader.program, "light.ambient"), 0.2f, 0.2f, 0.2f);
 		glUniform3f(glGetUniformLocation(shader.program, "light.diffuse"), 0.5f, 0.5f, 0.5f);
 		glUniform3f(glGetUniformLocation(shader.program, "light.specular"), 1.0f, 1.0f, 1.0f);
+		glUniform3f(glGetUniformLocation(shader.program, "light.falloff"), 1.0f, 0.09f, 0.034f);
 		glUniform1f(glGetUniformLocation(shader.program, "material.shininess"), 64.0f);
 
 		glUniform3f(glGetUniformLocation(shader.program, "viewPos"), camera.position.x, camera.position.y, camera.position.z);
