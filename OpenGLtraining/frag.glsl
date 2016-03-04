@@ -8,6 +8,7 @@ out vec4 color;
 uniform vec3 objectColor;
 uniform vec3 lightColor;
 uniform vec3 lightPos;
+uniform vec3 viewPos;
 
 void main()
 {
@@ -20,5 +21,12 @@ void main()
 	float diff = max(dot(norm, lightDir), 0.0f);
 	vec3 diffuse = diff * lightColor;
 
-	color = vec4((ambient + diffuse) * objectColor, 1.0f);
+	float specPower = 0.5f;
+	vec3 viewDir = normalize(viewPos - FragPos);
+	vec3 reflectDir = reflect(-lightDir, norm);
+
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0f), 32);
+	vec3 specular = specPower * spec * lightColor;
+
+	color = vec4((ambient + diffuse + specular) * objectColor, 1.0f);
 }

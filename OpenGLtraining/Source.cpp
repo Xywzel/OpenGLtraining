@@ -200,12 +200,13 @@ int main() {
 
 		shader.use();
 		GLint lightPosLoc = glGetUniformLocation(shader.program, "lightPos");
-		glUniform3f(lightPosLoc, lightLocation.x, lightLocation.y, lightLocation.z);
-
 		GLint objectColorLoc = glGetUniformLocation(shader.program, "objectColor");
 		GLint lightColorLoc = glGetUniformLocation(shader.program, "lightColor");
+		GLuint viewPosLoc = glGetUniformLocation(shader.program, "viewPos");
+		glUniform3f(lightPosLoc, lightLocation.x, lightLocation.y, lightLocation.z);
 		glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
 		glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+		glUniform3f(viewPosLoc, camera.position.x, camera.position.y, camera.position.z);
 
 		// glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		GLuint modelLoc = glGetUniformLocation(shader.program, "model");
