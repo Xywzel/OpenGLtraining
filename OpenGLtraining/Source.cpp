@@ -199,13 +199,17 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		shader.use();
-		GLint lightPosLoc = glGetUniformLocation(shader.program, "lightPos");
-		GLint objectColorLoc = glGetUniformLocation(shader.program, "objectColor");
-		GLint lightColorLoc = glGetUniformLocation(shader.program, "lightColor");
-		GLuint viewPosLoc = glGetUniformLocation(shader.program, "viewPos");
+		// Shader parameters
+		GLint lightPosLoc = glGetUniformLocation(shader.program, "light.position");
+		GLint lightAmbientLoc = glGetUniformLocation(shader.program, "light.ambient");
+		GLint lightDiffuseLoc = glGetUniformLocation(shader.program, "light.diffuse");
+		GLint lightSpecularLoc = glGetUniformLocation(shader.program, "light.specular");
 		glUniform3f(lightPosLoc, lightLocation.x, lightLocation.y, lightLocation.z);
-		glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
-		glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+		glUniform3f(lightAmbientLoc, sin(currentFrame * 2.0f), sin(currentFrame * 0.7f), sin(currentFrame * 0.3f));
+		glUniform3f(lightDiffuseLoc, sin(currentFrame * 2.0f) * 0.5f, sin(currentFrame * 0.7f) * 0.5f, sin(currentFrame * 0.3f) * 0.5f);
+		glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
+
+		GLuint viewPosLoc = glGetUniformLocation(shader.program, "viewPos");
 		glUniform3f(viewPosLoc, camera.position.x, camera.position.y, camera.position.z);
 
 		// glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -221,6 +225,17 @@ int main() {
 
 		glBindVertexArray(VAO);
 		for (GLint i = 0; i < 8; ++i) {
+			// Shader materials
+			GLint matAmbientLoc = glGetUniformLocation(shader.program, "material.ambient");
+			GLint matDiffuseLoc = glGetUniformLocation(shader.program, "material.diffuse");
+			GLint matSpecularLoc = glGetUniformLocation(shader.program, "material.specular");
+			GLint matShineLoc = glGetUniformLocation(shader.program, "material.shininess");
+
+			glUniform3f(matAmbientLoc, 1.0f-0.1*(float)i, 0.1f+0.1*(float)i, 0.31f);
+			glUniform3f(matDiffuseLoc, 1.0f, 0.5f, 0.31f);
+			glUniform3f(matSpecularLoc, 0.5f, 0.5f, 0.5f);
+			glUniform1f(matShineLoc, 32.0f);
+
 			glm::mat4 model;
 			model = glm::translate(model, locations[i]);
 			model = glm::rotate(model, (GLfloat) glfwGetTime() * glm::radians(10.0f), glm::vec3(0.0f, 1.0f, 0.0f));
