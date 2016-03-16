@@ -97,14 +97,14 @@ vec3 CalcPointLight(PointLight light, vec3 position, vec3 normal, vec3 viewDir){
 
 vec3 CalcSpotLight(SpotLight light, vec3 position, vec3 normal, vec3 viewDir){
 	vec3 lightDir = normalize(light.position - position);
-	vec3 reflectDir = reflect(-lightDir, normal);
+	vec3 halfwayDir = normalize(lightDir + viewDir);
 	
 	float theta = dot(lightDir, normalize(-light.direction));
 	float epsilon = light.cutoff.x - light.cutoff.y;
 	float intensity = clamp((theta - light.cutoff.y) / epsilon, 0.0f, 1.0f);
 
 	float diff = max(dot(normal, lightDir), 0.0f);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0f), material.shininess);
+	float spec = pow(max(dot(viewDir, halfwayDir), 0.0f), material.shininess);
 	
 	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
 	vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
