@@ -146,22 +146,35 @@ int main() {
 	};
 
 	glm::vec3 locations[] = {
-		glm::vec3(0.0f,  0.0f,  0.0f),
-		glm::vec3(2.0f,  5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f,  3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f,  2.0f, -2.5f),
-		glm::vec3(1.5f,  0.2f, -1.5f)
+		glm::vec3( 0.0f, -5.0f, -0.57f),
+		glm::vec3( 2.0f,  4.0f, -4.91f),
+		glm::vec3(-1.5f, -3.0f, -10.52f),
+		glm::vec3(-3.8f,  1.0f, -17.96f),
+		glm::vec3( 2.4f, -2.8f, -16.11f),
+		glm::vec3(-1.7f,  1.3f, -15.03f),
+		glm::vec3( 1.3f, -1.4f, -2.19f),
+		glm::vec3( 1.5f,  0.6f, -13.64f),
+		glm::vec3( 1.3f,  3.3f, -12.39f),
+		glm::vec3( 1.5f,  0.1f, -9.52f),
+		glm::vec3( 1.5f,  0.2f, -3.5f),
+		glm::vec3( 0.0f,  0.0f, -5.0f),
+		glm::vec3( 2.0f,  5.0f, -6.5f),
+		glm::vec3(-1.5f, -2.2f, -7.5f),
+		glm::vec3(-3.8f, -2.0f, -8.3f),
+		glm::vec3( 2.4f, -0.4f, -11.5f),
+		glm::vec3(-1.7f,  3.0f, -14.5f),
+		glm::vec3( 1.3f, -2.0f, -18.5f),
+		glm::vec3( 1.5f,  1.1f, -19.5f),
+		glm::vec3( 3.5f,  2.8f, -1.5f),
+		glm::vec3(-2.2f,  3.4f, -12.91f),
+		glm::vec3(-0.8f, -1.3f, -1.5f)
 	};
 
 	glm::vec3 lightLocations[] = {
-		glm::vec3(0.7f,  0.2f,  2.0f),
-		glm::vec3(2.3f, -3.3f, -4.0f),
-		glm::vec3(-4.0f,  2.0f, -12.0f),
-		glm::vec3(0.0f,  0.0f, -3.0f)
+		glm::vec3( 0.7f, -0.5f,  1.0f),
+		glm::vec3( 2.3f, -3.3f, -6.0f),
+		glm::vec3(-4.0f,  1.0f, -12.0f),
+		glm::vec3( 0.0f,  3.0f, -3.0f)
 	};
 
 	GLuint VBO, VAO;
@@ -230,12 +243,13 @@ int main() {
 	glUniform1i(glGetUniformLocation(shader.program, "material.diffuse"), 0);
 	glUniform1i(glGetUniformLocation(shader.program, "material.specular"), 1);
 	glUniform1i(glGetUniformLocation(shader.program, "material.emission"), 2);
+	glUniform1f(glGetUniformLocation(shader.program, "material.empower"), 0.005f);
 	glUniform1f(glGetUniformLocation(shader.program, "material.shininess"), 64.0f);
 	// DirLight
 	glUniform3f(glGetUniformLocation(shader.program, "dirLight.direction"), 0.1f, -1.0f, 0.2f);
-	glUniform3f(glGetUniformLocation(shader.program, "dirLight.ambient"), 0.2f, 0.2f, 0.2f);
-	glUniform3f(glGetUniformLocation(shader.program, "dirLight.diffuse"), 0.5f, 0.5f, 0.5f);
-	glUniform3f(glGetUniformLocation(shader.program, "dirLight.specular"), 0.5f, 0.5f, 0.5f);
+	glUniform3f(glGetUniformLocation(shader.program, "dirLight.ambient"), 0.05f, 0.05f, 0.05f);
+	glUniform3f(glGetUniformLocation(shader.program, "dirLight.diffuse"), 0.2f, 0.2f, 0.2f);
+	glUniform3f(glGetUniformLocation(shader.program, "dirLight.specular"), 0.2f, 0.2f, 0.2f);
 	// Point lights
 	for (int i = 0; i < 4; ++i) {
 		std::stringstream ss;
@@ -243,8 +257,8 @@ int main() {
 		std::string point = ss.str();
 		glUniform3f(glGetUniformLocation(shader.program, (point + ".position").c_str()), lightLocations[i].x, lightLocations[i].y, lightLocations[i].z);
 		glUniform3f(glGetUniformLocation(shader.program, (point + ".falloff").c_str()), 1.0f, 0.12f, 0.045f);
-		glUniform3f(glGetUniformLocation(shader.program, (point + ".diffuse").c_str()), 0.2f, 0.8f, 0.2f);
-		glUniform3f(glGetUniformLocation(shader.program, (point + ".specular").c_str()), 0.0f, 1.0f, 0.0f);
+		glUniform3f(glGetUniformLocation(shader.program, (point + ".diffuse").c_str()), (float) i * 0.33f, 1.0f - (float) i * 0.3f, 0.5f);
+		glUniform3f(glGetUniformLocation(shader.program, (point + ".specular").c_str()), (float) i * 0.33f, 1.0f - (float) i * 0.3f, 0.8f);
 	}
 
 	//Main loop
@@ -263,16 +277,16 @@ int main() {
 		mouseLast = mousePos;
 		camera.update(keys, mouseOffset, mouseScroll, deltaTime);
 
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		shader.use();
 		// Shader parameters
 		glUniform3f(glGetUniformLocation(shader.program, "spotLights[0].position"), camera.position.x, camera.position.y, camera.position.z);
 		glUniform3f(glGetUniformLocation(shader.program, "spotLights[0].direction"), camera.front.x, camera.front.y, camera.front.z);
-		glUniform2f(glGetUniformLocation(shader.program, "spotLights[0].cutoff"), glm::cos(glm::radians(10.0f)), glm::cos(glm::radians(15.0f)));
-		glUniform3f(glGetUniformLocation(shader.program, "spotLights[0].diffuse"), 0.6f, 0.2f, 0.6f);
-		glUniform3f(glGetUniformLocation(shader.program, "spotLights[0].specular"), 1.0f, 1.0f, 1.0f);
+		glUniform2f(glGetUniformLocation(shader.program, "spotLights[0].cutoff"), glm::cos(glm::radians(12.0f)), glm::cos(glm::radians(14.0f)));
+		glUniform3f(glGetUniformLocation(shader.program, "spotLights[0].diffuse"), 0.1f, 0.1f, 0.9f);
+		glUniform3f(glGetUniformLocation(shader.program, "spotLights[0].specular"), 0.1f, 0.1f, 1.0f);
 		
 
 		glUniform3f(glGetUniformLocation(shader.program, "viewPos"), camera.position.x, camera.position.y, camera.position.z);
@@ -295,13 +309,13 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, emissionMap);
 
 		glBindVertexArray(VAO);
-		for (GLint i = 0; i < 8; ++i) {
+		for (GLint i = 0; i < 20; ++i) {
 			// Shader materials
 
 
 			glm::mat4 model;
 			model = glm::translate(model, locations[i]);
-			model = glm::rotate(model, (GLfloat) glfwGetTime() * glm::radians(10.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			model = glm::rotate(model, (GLfloat) glfwGetTime() * glm::radians(10.0f * (GLfloat) ((i % 6) + 1)), glm::vec3(0.05f * (GLfloat) i, 1.0f - 0.05f * (GLfloat) i, 0.0f));
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			
 			glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -312,12 +326,14 @@ int main() {
 		modelLoc = glGetUniformLocation(lightShader.program, "model");
 		viewLoc = glGetUniformLocation(lightShader.program, "view");
 		projLoc = glGetUniformLocation(lightShader.program, "proj");
+		GLuint lcLoc = glGetUniformLocation(lightShader.program, "lightColor");
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
 		for (GLint i = 0; i < 4; ++i) {
 			glm::mat4 model;
 			model = glm::translate(model, lightLocations[i]);
 			model = glm::scale(model, glm::vec3(0.2f));
+			glUniform3f(lcLoc, (float) i * 0.33f, 1.0f - (float) i * 0.3f, 0.5f);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glBindVertexArray(lightVAO);
 			glDrawArrays(GL_TRIANGLES, 0, 36);

@@ -7,6 +7,7 @@ struct Material {
 	sampler2D diffuse;
 	sampler2D specular;
 	sampler2D emission;
+	float empower;
 	float shininess;	
 };
 
@@ -60,7 +61,7 @@ void main()
 	for(int i = 0; i < SPOT_LIGHTS; ++i){
 		cumulative += CalcSpotLight(spotLights[i], FragPos, normal, viewDir);
 	}
-	vec3 emission = vec3(texture(material.emission, TexCoords)) * 0.3f;
+	vec3 emission = vec3(texture(material.emission, TexCoords)) * material.empower;
 	color = vec4(cumulative + emission, 1.0f);
 }
 
