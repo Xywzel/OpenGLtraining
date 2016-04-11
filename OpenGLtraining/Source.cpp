@@ -18,6 +18,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Model.h"
+#include "Lights/PointLight.h"
 
 const GLuint WIDTH = 800, HEIGHT = 600;
 // Keyboard status
@@ -98,10 +99,14 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 	
 	//Shadders
-	Shader shader = Shader::Shader("Shaders\\simple.vertex", "Shaders\\simple.frag");
+	Shader shader = Shader::Shader("Shaders\\default.vertex", "Shaders\\default.frag");
 
 	//Models
 	Model modelThing("Resources\\suit\\nanosuit.obj");
+
+	//Lights
+	PointLight light1 = PointLight(glm::vec3(2.0f), glm::vec3(1.0f, 0.022, 0.0019), glm::vec3(1.0f), glm::vec3(1.0f), 0);
+	light1.update(shader);
 
 	//Main loop
 	while (!glfwWindowShouldClose(window))
